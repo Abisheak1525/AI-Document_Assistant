@@ -3,7 +3,7 @@ from pydantic import BaseModel
 from main import DocumentAssistant
 import os
 from fastapi import UploadFile, File
-import shutil, os
+import shutil
 
 app = FastAPI()
 assistant = DocumentAssistant()
@@ -22,16 +22,20 @@ async def upload_pdf(file: UploadFile = File(...)):
     with open(save_path, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
     
-    # TODO: Add your PDF indexing logic here (e.g. LangChain, ChromaDB)
-    
+    # Index the uploaded PDF into ChromaDB
+    try:
+        assistant.ingest_document(save_path)
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+
     return {"status": "success", "filename": file.filename}
 
 @app.post("/ask")
 async def ask(request: QueryRequest):
     try:
         # Use your existing logic
-        answer = assistant.ask_question(request.query)
-        return {"answer": answer}
+        result = assistant.ask_question(request.query)
+        return result  # already returns {"answer": ..., "sources": [...]}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

@@ -6,7 +6,6 @@ from langchain_ollama import OllamaLLM, OllamaEmbeddings
 from langchain_chroma import Chroma
 
 from langchain_community.document_loaders import PyPDFLoader
-from langchain_classic.chains import RetrievalQA
 
 load_dotenv()
 
