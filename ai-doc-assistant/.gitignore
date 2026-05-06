@@ -1,0 +1,6 @@
+venv/
+__pycache__/
+*.pyc
+.env
+chroma_db/
+ai-doc-assistant/ai-engine/venv/
